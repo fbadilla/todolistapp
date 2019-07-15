@@ -10,27 +10,53 @@ export class Home extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			lista: [
-				{ label: "Make the bed", done: false },
-				{ label: "Walk the dog", done: false },
-				{ label: "Do the replits", done: false },
-				{ label: "Walk the dog", done: false },
-				{ label: "Do the replits", done: false }
-			]
+			lista: [],
+			userActive: "fcobad"
 		};
+
 		this.cambiarvalor = this.cambiarvalor.bind(this);
 		this.borrar = this.borrar.bind(this);
 	}
 	cambiarvalor(valor) {
 		let nuevo = this.state.lista;
-		nuevo.push({
-			label: valor,
-			done: false
-		});
-		this.setState({
-			lista: nuevo
-		});
+		fetch(
+			"https://3000-bda036c0-ab2c-4d96-9982-e6f60906addf.ws-us0.gitpod.io/api/todo/" +
+				this.state.userActive,
+			{
+				method: "POST", // or 'PUT'
+				body: JSON.stringify({
+					label: valor,
+					done: false,
+					username: "fcobad"
+				}), // data can be `string` or {object}!
+				headers: {
+					"Content-Type": "application/json"
+				}
+			}
+		)
+			.then(resp => {
+				return resp.json();
+			})
+			.then(response => this.obtenerListado())
+			.catch(error => console.error("Error:", error));
 	}
+	obtenerListado() {
+		fetch(
+			"https://3000-bda036c0-ab2c-4d96-9982-e6f60906addf.ws-us0.gitpod.io/api/todo/" +
+				this.state.userActive
+		)
+			.then(resp => {
+				return resp.json();
+			})
+			.then(data => {
+				this.setState({ lista: data });
+			});
+	}
+
+	componentDidMount() {
+		this.obtenerListado();
+	}
+
 	borrar(valor) {
 		let eliminar = this.state.lista;
 		eliminar = eliminar.filter(item => {
