@@ -20,7 +20,7 @@ export class Home extends React.Component {
 	cambiarvalor(valor) {
 		let nuevo = this.state.lista;
 		fetch(
-			"https://3000-bda036c0-ab2c-4d96-9982-e6f60906addf.ws-us0.gitpod.io/api/todo/" +
+			"https://3000-e3dea987-cf9c-440d-a15b-803e99f7cb9e.ws-us0.gitpod.io/api/todo/" +
 				this.state.userActive,
 			{
 				method: "POST", // or 'PUT'
@@ -42,7 +42,7 @@ export class Home extends React.Component {
 	}
 	obtenerListado() {
 		fetch(
-			"https://3000-bda036c0-ab2c-4d96-9982-e6f60906addf.ws-us0.gitpod.io/api/todo/" +
+			"https://3000-e3dea987-cf9c-440d-a15b-803e99f7cb9e.ws-us0.gitpod.io/api/todo/" +
 				this.state.userActive
 		)
 			.then(resp => {
@@ -59,13 +59,17 @@ export class Home extends React.Component {
 
 	borrar(valor) {
 		let eliminar = this.state.lista;
-		eliminar = eliminar.filter(item => {
-			return item !== valor;
-		});
-
-		this.setState({
-			lista: eliminar
-		});
+		fetch(
+			"https://3000-e3dea987-cf9c-440d-a15b-803e99f7cb9e.ws-us0.gitpod.io/api/todo/" +
+				this.state.userActive,
+			{
+				method: "DELETE", // or 'PUT'
+				// data can be `string` or {object}!
+				headers: {
+					"Content-Type": "application/json"
+				}
+			}
+		).then(response => this.obtenerListado());
 	}
 
 	render() {
